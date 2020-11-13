@@ -13,29 +13,29 @@ namespace LoginDemo
     {
         public string LoginUser(string UserID, string Password)
         {
-            //Get user details for the user who is trying to login - JRozario
+            //Get user details for the user who is trying to login
             var user = UserList.SingleOrDefault(x => x.USERID == UserID);
 
-            //Authenticate User, Check if its a registered user in DB  - JRozario
+            //Authenticate User, Check if its a registered user in DB  
             if (user == null)
                 return null;
 
-            //If its registered user, check user password stored in DB - JRozario
-            //For demo, password is not hashed. Its just a string comparison - JRozario
-            //In reality, password would be hashed and stored in DB. Before comparing, hash the password - JRozario
+            //If its registered user, check user password stored in DB 
+            //For demo, password is not hashed. Its just a string comparison 
+            //In reality, password would be hashed and stored in DB. Before comparing, hash the password 
             if (Password == user.PASSWORD)
             {
-                //Authentication successful, Issue Token with user credentials - JRozario
-                //Provide the security key which was given in the JWToken configuration in Startup.cs - JRozario
+                //Authentication successful, Issue Token with user credentials 
+                //Provide the security key which was given in the JWToken configuration in Startup.cs 
                 var key = Encoding.ASCII.GetBytes("YourKey-2374-OFFKDI940NG7:56753253-tyuw-5769-0921-kfirox29zoxv");
-                //Generate Token for user - JRozario
+                //Generate Token for user 
                 var JWToken = new JwtSecurityToken(
                     issuer: "http://localhost:45092/",
                     audience: "http://localhost:45092/",
                     claims: GetUserClaims(user),
                     notBefore: new DateTimeOffset(DateTime.Now).DateTime,
                     expires: new DateTimeOffset(DateTime.Now.AddDays(1)).DateTime,
-                    //Using HS256 Algorithm to encrypt Token - JRozario
+                    //Using HS256 Algorithm to encrypt Token 
                     signingCredentials: new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
                 );
                 var token = new JwtSecurityTokenHandler().WriteToken(JWToken);
@@ -47,7 +47,7 @@ namespace LoginDemo
             }
         }
 
-        //Using hard coded collection list as Data Store for demo purpose. In reality, User data comes from Database or some other Data Source - JRozario
+        //Using hard coded collection list as Data Store for demo purpose. In reality, User data comes from Database or some other Data Source 
         private List<User> UserList = new List<User>
         {
             new User { USERID = "test@gmail.com", PASSWORD = "test", EMAILID = "test@gmail.com", FIRST_NAME = "Hello", LAST_NAME = "test", PHONE = "356-735-2748", ACCESS_LEVEL = "Director", READ_ONLY = "true" },
@@ -56,7 +56,7 @@ namespace LoginDemo
             new User { USERID = "JBlack@email.com", PASSWORD = "test", FIRST_NAME = "Joe", LAST_NAME = "Black", EMAILID = "JBlack@email.com", PHONE = "764-460-8610", ACCESS_LEVEL = "Analyst", READ_ONLY = "true" }
         };
 
-        //Using hard coded collection list as Data Store for demo. In reality, User data comes from Database or some other Data Source - JRozario
+        //Using hard coded collection list as Data Store for demo. In reality, User data comes from Database or some other Data Source
         private IEnumerable<Claim> GetUserClaims(User user)
         {
             IEnumerable<Claim> claims = new Claim[]
